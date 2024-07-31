@@ -10,19 +10,19 @@ private:
 
 public:
     Item(string itemName, double itemPrice, int itemStock) {
-        name = itemName;
-        price = itemPrice;
-        stock = itemStock;
+        this->name = itemName;
+        this->price = itemPrice;
+        this->stock = itemStock;
     }
 
     void displayItem() {
-        cout << "Item: " << name << ", Price: " << price << ", Stock: " << stock << endl;
+        cout << "Item: " << this->name << ", Price: " << this->price << ", Stock: " << this->stock << endl;
     }
 
     bool dispenseItem() {
-        if (stock > 0) {
-            stock--;
-            cout << "Dispensing " << name << endl;
+        if (this->stock > 0) {
+            this->stock--;
+            cout << "Dispensing " << this->name << endl;
             return true;
         } else {
             cout << "Out of stock!" << endl;
