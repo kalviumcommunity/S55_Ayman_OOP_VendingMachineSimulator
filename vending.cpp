@@ -9,10 +9,10 @@ private:
     int stock;
 
 public:
-    Item(string itemName, double itemPrice, int itemStock) {
-        this->name = itemName;
-        this->price = itemPrice;
-        this->stock = itemStock;
+    Item(string name, double price, int stock) {
+        this->name = name;
+        this->price = price;
+        this->stock = stock;
     }
 
     void displayItem() {
