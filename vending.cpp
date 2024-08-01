@@ -3,7 +3,7 @@
 using namespace std;
 
 class Item {
-private:
+protected:
     string name;
     double price;
     int stock;
@@ -15,14 +15,56 @@ public:
         this->stock = itemStock;
     }
 
-    void displayItem() {
-        cout << "Item: " << this->name << ", Price: " << this->price << ", Stock: " << this->stock << endl;
+    virtual void displayItem() = 0;
+    virtual bool dispenseItem() = 0;
+
+    string getName(){
+         return name; 
+         }
+    double getPrice(){ 
+        return price;
+         }
+    int getStock(){
+         return stock; 
+         }
+
+};
+
+class Snack : public Item {
+public:
+    Snack(string itemName, double itemPrice, int itemStock)
+        : Item(itemName, itemPrice, itemStock) {}
+
+    
+    void displayItem() override {
+        cout << "Snack: " << this->name << ", Price: " << this->price << ", Stock: " << this->stock << endl;
     }
 
-    bool dispenseItem() {
+    bool dispenseItem() override {
         if (this->stock > 0) {
             this->stock--;
-            cout << "Dispensing " << this->name << endl;
+            cout << "Dispensing snack: " << this->name << endl;
+            return true;
+        } else {
+            cout << "Out of stock!" << endl;
+            return false;
+        }
+    }
+};
+
+class Beverage : public Item {
+public:
+    Beverage(string itemName, double itemPrice, int itemStock)
+        : Item(itemName, itemPrice, itemStock) {}
+
+    void displayItem() override {
+        cout << "Beverage: " << this->name << ", Price: " << this->price << ", Stock: " << this->stock << endl;
+    }
+
+    bool dispenseItem() override {
+        if (this->stock > 0) {
+            this->stock--;
+            cout << "Dispensing beverage: " << this->name << endl;
             return true;
         } else {
             cout << "Out of stock!" << endl;
