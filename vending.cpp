@@ -40,12 +40,17 @@ public:
 
 class VendingMachine {
 private:
-    Item items[3];
+    Item* items; // Pointer to a dynamically allocated array of Item objects
+    int itemCount; // Number of items in the vending machine
+
 
 public:
-    VendingMachine(Item itemArray[]) {
-        for (int i = 0; i < 3; i++) {
-            items[i] = itemArray[i];
+    // Constructor with dynamic memory allocation for items
+    VendingMachine(Item* itemArray, int count) {
+        itemCount = count;
+        items = new Item[itemCount]; // Allocate memory for the array of Item objects
+        for (int i = 0; i < itemCount; i++) {
+            items[i] = itemArray[i]; // Copy the content of each Item into the array
         }
     }
 
@@ -63,6 +68,12 @@ public:
             cout << "Invalid item selection!" << endl;
         }
     }
+
+    // Destructor to deallocate dynamic memory
+    ~VendingMachine() {
+        delete[] items; // Deallocate the array of Item objects
+        cout << "VendingMachine memory cleaned up." << endl;
+    }
 };
 
 int main() {
@@ -73,16 +84,18 @@ int main() {
 
     Item snacks[] = {snack1, snack2, snack3};
 
-    VendingMachine vendingMachine(snacks);
+    VendingMachine* vendingMachine = new VendingMachine(snacks, 3);   
 
     cout << "Available items:" << endl;
-    vendingMachine.displayItems();
+    vendingMachine->displayItems();
 
     cout << "\nSelecting item:" << endl;
-    vendingMachine.selectItem(2);
+    vendingMachine->selectItem(2);
 
     cout << "\nAvailable items after selection:" << endl;
-    vendingMachine.displayItems();
+    vendingMachine->displayItems();
+
+    delete vendingMachine;  // Calls VendingMachine destructor to deallocate memory
 
     return 0;
 }
