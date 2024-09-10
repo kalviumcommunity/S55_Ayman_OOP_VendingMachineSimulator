@@ -36,13 +36,18 @@ public:
             return false;
         }
     }
+
+    double getPrice() const {
+        return price;
+    }
 };
 
 class VendingMachine {
 private:
     Item* items; // Pointer to a dynamically allocated array of Item objects
     int itemCount; // Number of items in the vending machine
-
+    static int totalItemsDispensed;
+    static double totalRevenue;
 
 public:
     // Constructor with dynamic memory allocation for items
@@ -62,11 +67,19 @@ public:
     }
 
     void selectItem(int itemNumber) {
-        if (itemNumber > 0 && itemNumber <= 3) {
-            items[itemNumber - 1].dispenseItem();
-        } else {
+        if (itemNumber > 0 && itemNumber <= itemCount) {
+            if (items[itemNumber - 1].dispenseItem()) {
+                totalItemsDispensed++; // Increment total items dispensed
+                totalRevenue += items[itemNumber - 1].getPrice(); // Add item price to total revenue
+            }
+        }else {
             cout << "Invalid item selection!" << endl;
         }
+    }
+
+    void displayStats() {
+        cout << "Total items dispensed: " << totalItemsDispensed << endl;
+        cout << "Total revenue: $" << totalRevenue << endl;
     }
 
     // Destructor to deallocate dynamic memory
@@ -75,6 +88,9 @@ public:
         cout << "VendingMachine memory cleaned up." << endl;
     }
 };
+
+int VendingMachine::totalItemsDispensed = 0;
+double VendingMachine::totalRevenue = 0.0;
 
 int main() {
 
@@ -94,6 +110,10 @@ int main() {
 
     cout << "\nAvailable items after selection:" << endl;
     vendingMachine->displayItems();
+
+    cout<<"\n";
+    cout<<"\nStats:"<<endl;
+    vendingMachine->displayStats();
 
     delete vendingMachine;  // Calls VendingMachine destructor to deallocate memory
 
