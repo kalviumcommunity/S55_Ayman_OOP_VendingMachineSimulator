@@ -77,7 +77,7 @@ public:
         }
     }
 
-    void displayStats() {
+    static void displayStats() {
         cout << "Total items dispensed: " << totalItemsDispensed << endl;
         cout << "Total revenue: $" << totalRevenue << endl;
     }
@@ -113,7 +113,7 @@ int main() {
 
     cout<<"\n";
     cout<<"\nStats:"<<endl;
-    vendingMachine->displayStats();
+    VendingMachine::displayTotalStats();
 
     delete vendingMachine;  // Calls VendingMachine destructor to deallocate memory
 
