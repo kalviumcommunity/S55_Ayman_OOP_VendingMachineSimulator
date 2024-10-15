@@ -8,15 +8,15 @@ private:   // private variables
     double price;
     int stock;
 
-public:  // public member variables/fucntions
+public:  // public member variables/functions
 
-    Item(){
+    Item(){         // Constructor
         name="";
         price=0.0;
         stock=0;
     }
 
-    Item(string name, double price, int stock) {
+    Item(string name, double price, int stock) {  // Constructor
         this->name = name;
         this->price = price;
         this->stock = stock;
@@ -69,9 +69,7 @@ public:  // public member variables/fucntions
         }
     }
 
-    double getPrice() const {
-        return price;
-    }
+    
 };
 
 class VendingMachine {
@@ -85,7 +83,7 @@ private:        // private variables
 public: // public member variables/functions
 
     // Constructor with dynamic memory allocation for items
-    VendingMachine(Item* itemArray, int count) {
+    VendingMachine(Item* itemArray, int count) {        // Constructor
         itemCount = count;
         items = new Item[itemCount]; // Allocate memory for the array of Item objects
         for (int i = 0; i < itemCount; i++) {
@@ -116,7 +114,7 @@ public: // public member variables/functions
         cout << "Total revenue: $" << totalRevenue << endl;
     }
 
-    // Destructor to deallocate dynamic memory
+    //  Destructor to deallocate dynamic memory
     ~VendingMachine() {
         delete[] items; // Deallocate the array of Item objects
         cout << "VendingMachine memory cleaned up." << endl;
