@@ -3,12 +3,12 @@
 using namespace std;
 
 class Item {
-private:
+private:   // private variables
     string name;
     double price;
     int stock;
 
-public:
+public:  // public member variables/fucntions
 
     Item(){
         name="";
@@ -75,13 +75,15 @@ public:
 };
 
 class VendingMachine {
-private:
+private:        // private variables
+
     Item* items; // Pointer to a dynamically allocated array of Item objects
     int itemCount; // Number of items in the vending machine
     static int totalItemsDispensed;
     static double totalRevenue;
 
-public:
+public: // public member variables/functions
+
     // Constructor with dynamic memory allocation for items
     VendingMachine(Item* itemArray, int count) {
         itemCount = count;
