@@ -22,8 +22,40 @@ public:
         this->stock = stock;
     }
 
+    
+    // Accessor (getter) for name
+    string getName() const {
+        return name;
+    }
+
+    // Mutator (setter) for name
+    void setName(string name) {
+        this->name = name;
+    }
+
+    // Accessor for price
+    double getPrice() const {
+        return price;
+    }
+
+    // Mutator for price
+    void setPrice(double price) {
+        this->price = price;
+    }
+
+    // Accessor for stock
+    int getStock() const {
+        return stock;
+    }
+
+    // Mutator for stock
+    void setStock(int stock) {
+        this->stock = stock;
+    }
+
+    // Function to display item details
     void displayItem() {
-        cout << "Item: " << this->name << ", Price: " << this->price << ", Stock: " << this->stock << endl;
+        cout << "Item: " << name << ", Price: $" << price << ", Stock: " << stock << endl;
     }
 
     bool dispenseItem() {
@@ -113,7 +145,7 @@ int main() {
 
     cout<<"\n";
     cout<<"\nStats:"<<endl;
-    VendingMachine::displayTotalStats();
+    VendingMachine::displayStats();
 
     delete vendingMachine;  // Calls VendingMachine destructor to deallocate memory
 
