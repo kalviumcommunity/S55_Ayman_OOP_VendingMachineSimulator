@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <vector>
 using namespace std;
 
 // Abstract Base class
@@ -10,7 +11,6 @@ protected:
     int stock;
 
 public:
-    // Constructor
     Item(string name, double price, int stock) 
         : name(name), price(price), stock(stock) {}
 
@@ -28,6 +28,8 @@ public:
     }
 
     double getPrice() const { return price; }
+    int getStock() const { return stock; }
+    void restock(int amount) { stock += amount; }
 };
 
 // Derived class: Snack
@@ -54,29 +56,54 @@ public:
     }
 };
 
+// New class: ItemManager (SRP)
+class ItemManager {
+private:
+    vector<Item*> items;
+
+public:
+    void addItem(Item* item) {
+        items.push_back(item);
+    }
+
+    void displayItems() {
+        for (size_t i = 0; i < items.size(); i++) {
+            cout << i + 1 << ". ";
+            items[i]->displayItem();
+        }
+    }
+
+    Item* getItem(int index) {
+        if (index >= 0 && index < items.size()) {
+            return items[index];
+        }
+        return nullptr;
+    }
+
+    ~ItemManager() {
+        for (Item* item : items) {
+            delete item;
+        }
+        cout << "ItemManager memory cleaned up." << endl;
+    }
+};
+
 // VendingMachine class
 class VendingMachine {
 private:
-    Item** items; // Array of pointers to Item
-    int itemCount;
+    ItemManager& itemManager;
     static int totalItemsDispensed;
     static double totalRevenue;
 
 public:
-    VendingMachine(Item** itemArray, int count) 
-        : items(itemArray), itemCount(count) {}
-
-    void displayItems() {
-        for (int i = 0; i < itemCount; i++) {
-            items[i]->displayItem(); // Polymorphic call
-        }
-    }
+    VendingMachine(ItemManager& manager) : itemManager(manager) {}
 
     void selectItem(int itemNumber) {
-        if (itemNumber > 0 && itemNumber <= itemCount) {
-            if (items[itemNumber - 1]->dispenseItem()) {
+        Item* selectedItem = itemManager.getItem(itemNumber - 1);
+        if (selectedItem) {
+            if (selectedItem->dispenseItem()) {
                 totalItemsDispensed++;
-                totalRevenue += items[itemNumber - 1]->getPrice();
+                totalRevenue += selectedItem->getPrice();
             }
         } else {
             cout << "Invalid item selection!" << endl;
@@ -87,42 +114,33 @@ public:
         cout << "Total items dispensed: " << totalItemsDispensed << endl;
         cout << "Total revenue: $" << totalRevenue << endl;
     }
-
-    ~VendingMachine() {
-        for (int i = 0; i < itemCount; i++) {
-            delete items[i];
-        }
-        delete[] items;
-        cout << "VendingMachine memory cleaned up." << endl;
-    }
 };
 
 int VendingMachine::totalItemsDispensed = 0;
 double VendingMachine::totalRevenue = 0.0;
 
 int main() {
-    // Creating snack and beverage items
-    Item* snack1 = new Snack("Chips", 1.50, 10);
-    Item* snack2 = new Snack("Chocolate", 2.00, 5);
-    Item* beverage1 = new Beverage("Soda", 1.25, 8);
+    // Creating an ItemManager instance
+    ItemManager itemManager;
 
-    Item* items[] = {snack1, snack2, beverage1};
+    // Adding items to the manager
+    itemManager.addItem(new Snack("Chips", 1.50, 10));
+    itemManager.addItem(new Snack("Chocolate", 2.00, 5));
+    itemManager.addItem(new Beverage("Soda", 1.25, 8));
 
-    VendingMachine* vendingMachine = new VendingMachine(items, 3);
+    VendingMachine vendingMachine(itemManager);
 
     cout << "Available items:" << endl;
-    vendingMachine->displayItems();
+    itemManager.displayItems();
 
     cout << "\nSelecting item:" << endl;
-    vendingMachine->selectItem(2);
+    vendingMachine.selectItem(2);
 
     cout << "\nAvailable items after selection:" << endl;
-    vendingMachine->displayItems();
+    itemManager.displayItems();
 
     cout << "\nStats:" << endl;
     VendingMachine::displayStats();
-
-    delete vendingMachine;
 
     return 0;
 }
