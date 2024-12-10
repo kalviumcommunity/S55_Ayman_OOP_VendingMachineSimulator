@@ -10,6 +10,7 @@ private:
     int stock;
 
 public:
+    // Constructor Overloading (Compile-Time Polymorphism)
     Item() : name(""), price(0.0), stock(0) {} // Default constructor
 
     Item(string name, double price, int stock) { // Parameterized constructor
@@ -28,8 +29,18 @@ public:
     int getStock() const { return stock; }
     void setStock(int stock) { this->stock = stock; }
 
+    // Function Overloading (Compile-Time Polymorphism)
     void displayItem() {
         cout << "Item: " << name << ", Price: $" << price << ", Stock: " << stock << endl;
+    }
+
+    void displayItem(bool detailed) {
+        if (detailed) {
+            cout << "Detailed View - Item Name: " << name << ", Price: $" << price 
+                 << ", Stock Available: " << stock << endl;
+        } else {
+            displayItem();
+        }
     }
 
     bool dispenseItem() {
@@ -131,6 +142,9 @@ int main() {
 
     cout << "\nAvailable items after selection:" << endl;
     vendingMachine->displayItems();
+
+    cout << "\nDetailed view of item 1:" << endl;
+    items[0].displayItem(true); // Using overloaded function
 
     cout << "\nStats:" << endl;
     VendingMachine::displayStats();
