@@ -1,98 +1,88 @@
-#include<iostream>
-#include<string>
+#include <iostream>
+#include <string>
 using namespace std;
 
+// Base class
 class Item {
-private:   // private variables
+private:
     string name;
     double price;
     int stock;
 
-public:  // public member variables/functions
+public:
+    Item() : name(""), price(0.0), stock(0) {} // Default constructor
 
-    Item(){         // Constructor
-        name="";
-        price=0.0;
-        stock=0;
-    }
-
-    Item(string name, double price, int stock) {  // Constructor
+    Item(string name, double price, int stock) { // Parameterized constructor
         this->name = name;
         this->price = price;
         this->stock = stock;
     }
 
-    
-    // Accessor (getter) for name
-    string getName() const {
-        return name;
-    }
+    // Accessors (getters) and mutators (setters)
+    string getName() const { return name; }
+    void setName(string name) { this->name = name; }
 
-    // Mutator (setter) for name
-    void setName(string name) {
-        this->name = name;
-    }
+    double getPrice() const { return price; }
+    void setPrice(double price) { this->price = price; }
 
-    // Accessor for price
-    double getPrice() const {
-        return price;
-    }
+    int getStock() const { return stock; }
+    void setStock(int stock) { this->stock = stock; }
 
-    // Mutator for price
-    void setPrice(double price) {
-        this->price = price;
-    }
-
-    // Accessor for stock
-    int getStock() const {
-        return stock;
-    }
-
-    // Mutator for stock
-    void setStock(int stock) {
-        this->stock = stock;
-    }
-
-    // Function to display item details
     void displayItem() {
         cout << "Item: " << name << ", Price: $" << price << ", Stock: " << stock << endl;
     }
 
     bool dispenseItem() {
-        if (this->stock > 0) {
-            this->stock--;
-            cout << "Dispensing " << this->name << endl;
+        if (stock > 0) {
+            stock--;
+            cout << "Dispensing " << name << endl;
             return true;
         } else {
             cout << "Out of stock!" << endl;
             return false;
         }
     }
-
-    
 };
 
-class VendingMachine {
-private:        // private variables
+// Derived class: Snack (Single Inheritance)
+class Snack : public Item {
+public:
+    Snack(string name, double price, int stock) : Item(name, price, stock) {}
+    void displaySnack() {
+        cout << "Snack: ";
+        displayItem();
+    }
+};
 
-    Item* items; // Pointer to a dynamically allocated array of Item objects
-    int itemCount; // Number of items in the vending machine
+// Derived class: Beverage (Hierarchical Inheritance)
+class Beverage : public Item {
+public:
+    Beverage(string name, double price, int stock) : Item(name, price, stock) {}
+    void displayBeverage() {
+        cout << "Beverage: ";
+        displayItem();
+    }
+};
+
+// VendingMachine class
+class VendingMachine {
+private:
+    Item* items;
+    int itemCount;
     static int totalItemsDispensed;
     static double totalRevenue;
 
-public: // public member variables/functions
-
-    // Constructor with dynamic memory allocation for items
-    VendingMachine(Item* itemArray, int count) {        // Constructor
+public:
+    VendingMachine(Item* itemArray, int count) {
         itemCount = count;
-        items = new Item[itemCount]; // Allocate memory for the array of Item objects
+        items = new Item[itemCount];
         for (int i = 0; i < itemCount; i++) {
-            items[i] = itemArray[i]; // Copy the content of each Item into the array
+            items[i] = itemArray[i];
         }
     }
 
     void displayItems() {
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < itemCount; i++) {
             cout << i + 1 << ". ";
             items[i].displayItem();
         }
@@ -101,10 +91,10 @@ public: // public member variables/functions
     void selectItem(int itemNumber) {
         if (itemNumber > 0 && itemNumber <= itemCount) {
             if (items[itemNumber - 1].dispenseItem()) {
-                totalItemsDispensed++; // Increment total items dispensed
-                totalRevenue += items[itemNumber - 1].getPrice(); // Add item price to total revenue
+                totalItemsDispensed++;
+                totalRevenue += items[itemNumber - 1].getPrice();
             }
-        }else {
+        } else {
             cout << "Invalid item selection!" << endl;
         }
     }
@@ -114,9 +104,8 @@ public: // public member variables/functions
         cout << "Total revenue: $" << totalRevenue << endl;
     }
 
-    //  Destructor to deallocate dynamic memory
     ~VendingMachine() {
-        delete[] items; // Deallocate the array of Item objects
+        delete[] items;
         cout << "VendingMachine memory cleaned up." << endl;
     }
 };
@@ -125,14 +114,14 @@ int VendingMachine::totalItemsDispensed = 0;
 double VendingMachine::totalRevenue = 0.0;
 
 int main() {
+    // Creating snack and beverage items
+    Snack snack1("Chips", 1.50, 10);
+    Snack snack2("Chocolate", 2.00, 5);
+    Beverage beverage1("Soda", 1.25, 8);
 
-    Item snack1("Chips", 1.50, 10);
-    Item snack2("Chocolate", 2.00, 5);
-    Item snack3("Soda", 1.25, 8);
+    Item items[] = {snack1, snack2, beverage1};
 
-    Item snacks[] = {snack1, snack2, snack3};
-
-    VendingMachine* vendingMachine = new VendingMachine(snacks, 3);   
+    VendingMachine* vendingMachine = new VendingMachine(items, 3);
 
     cout << "Available items:" << endl;
     vendingMachine->displayItems();
@@ -143,11 +132,10 @@ int main() {
     cout << "\nAvailable items after selection:" << endl;
     vendingMachine->displayItems();
 
-    cout<<"\n";
-    cout<<"\nStats:"<<endl;
+    cout << "\nStats:" << endl;
     VendingMachine::displayStats();
 
-    delete vendingMachine;  // Calls VendingMachine destructor to deallocate memory
+    delete vendingMachine;
 
     return 0;
 }
