@@ -18,88 +18,44 @@ public:
     virtual ~Item() {}
 };
 
-// Derived Class: Snack
-class Snack : public Item {
+// Derived Class: RefundableItem (Adheres to LSP)
+class RefundableItem : public Item {
 public:
-    Snack(string name, double price, int stock) : Item(name, price, stock) {}
+    RefundableItem(string name, double price, int stock) : Item(name, price, stock) {}
 
     void displayItem() const override {
-        cout << "Snack: " << name << ", Price: $" << price << ", Stock: " << stock << endl;
+        cout << "Refundable Item: " << name << ", Price: $" << price << ", Stock: " << stock << endl;
     }
 
     bool dispenseItem() override {
         if (stock > 0) {
             stock--;
-            cout << "Dispensing Snack: " << name << endl;
+            cout << "Dispensing Refundable Item: " << name << endl;
             return true;
         } else {
             cout << "Out of stock!" << endl;
             return false;
         }
     }
+
+    void processRefund() const {
+        cout << "Refund processed for: " << name << endl;
+    }
 };
 
-// Derived Class: Beverage
-class Beverage : public Item {
+// Derived Class: NonRefundableItem (Adheres to LSP)
+class NonRefundableItem : public Item {
 public:
-    Beverage(string name, double price, int stock) : Item(name, price, stock) {}
+    NonRefundableItem(string name, double price, int stock) : Item(name, price, stock) {}
 
     void displayItem() const override {
-        cout << "Beverage: " << name << ", Price: $" << price << ", Stock: " << stock << endl;
+        cout << "Non-Refundable Item: " << name << ", Price: $" << price << ", Stock: " << stock << endl;
     }
 
     bool dispenseItem() override {
         if (stock > 0) {
             stock--;
-            cout << "Dispensing Beverage: " << name << endl;
-            return true;
-        } else {
-            cout << "Out of stock!" << endl;
-            return false;
-        }
-    }
-};
-
-// New Derived Class: HotBeverage (Demonstrates OCP)
-class HotBeverage : public Item {
-public:
-    HotBeverage(string name, double price, int stock) : Item(name, price, stock) {}
-
-    void displayItem() const override {
-        cout << "Hot Beverage: " << name << ", Price: $" << price << ", Stock: " << stock << endl;
-    }
-
-    bool dispenseItem() override {
-        if (stock > 0) {
-            stock--;
-            cout << "Dispensing Hot Beverage: " << name << endl;
-            return true;
-        } else {
-            cout << "Out of stock!" << endl;
-            return false;
-        }
-    }
-};
-
-// New Derived Class: DiscountedItem (Demonstrates OCP)
-class DiscountedItem : public Item {
-private:
-    double discount;
-
-public:
-    DiscountedItem(string name, double price, int stock, double discount)
-        : Item(name, price, stock), discount(discount) {}
-
-    void displayItem() const override {
-        cout << "Discounted Item: " << name << ", Original Price: $" << price
-             << ", Discounted Price: $" << price * (1 - discount)
-             << ", Stock: " << stock << endl;
-    }
-
-    bool dispenseItem() override {
-        if (stock > 0) {
-            stock--;
-            cout << "Dispensing Discounted Item: " << name << endl;
+            cout << "Dispensing Non-Refundable Item: " << name << endl;
             return true;
         } else {
             cout << "Out of stock!" << endl;
@@ -175,19 +131,18 @@ double VendingMachine::totalRevenue = 0.0;
 int main() {
     // Create Items
     Item* items[] = {
-        new Snack("Chips", 1.50, 10),
-        new Beverage("Soda", 1.25, 8),
-        new HotBeverage("Coffee", 2.00, 5),
-        new DiscountedItem("Chocolate", 2.00, 5, 0.10)};
+        new RefundableItem("Refundable Chips", 1.50, 10),
+        new NonRefundableItem("Non-Refundable Soda", 1.25, 8)};
 
-    ItemManager* manager = new ItemManager(items, 4);
+    ItemManager* manager = new ItemManager(items, 2);
     VendingMachine vendingMachine(manager);
 
     cout << "Available items:" << endl;
     manager->displayItems();
 
     cout << "\nSelecting item:" << endl;
-    vendingMachine.selectItem(3);
+    vendingMachine.selectItem(1); // Dispenses Refundable Item
+    vendingMachine.selectItem(2); // Dispenses Non-Refundable Item
 
     cout << "\nStats:" << endl;
     VendingMachine::displayStats();
